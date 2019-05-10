@@ -117,6 +117,7 @@ class App extends PureComponent<Props, State> {
                         </Tabs>
                     </AppBar>
                     <Paper className={classes.tabContainer}>
+
                         <Tabs value={assetsTab}
                               indicatorColor="primary"
                               textColor="primary"
@@ -126,6 +127,11 @@ class App extends PureComponent<Props, State> {
                             <Tab label="First" value={"first"}/>
                             <Tab label="Second" value={"second"}/>
                         </Tabs>
+                        <TextField
+                            label="초기자본"
+                            margin="normal"
+                            variant="outlined"
+                        />
                         <Table className={classes.table}>
                             <TableHead>
                                 <TableRow>
@@ -137,17 +143,20 @@ class App extends PureComponent<Props, State> {
                             <TableBody>
                                 <TableRow>
                                     <TableCell align="left" padding={"dense"}>
-                                        <TextField value={0}
+                                        <TextField value={undefined}
+                                                   onBlur={(e) => console.log(1)}
                                                    fullWidth
                                         />
                                     </TableCell>
                                     <TableCell align="left" padding={"dense"}>
                                         <TextField value={undefined}
+                                                   onBlur={(e) => console.log(2)}
                                                    fullWidth
                                         />
                                     </TableCell>
                                     <TableCell align="left" padding={"dense"}>
-                                        <TextField value={0}
+                                        <TextField value={undefined}
+                                                   onBlur={(e) => console.log(3)}
                                                    fullWidth
                                         />
                                     </TableCell>
