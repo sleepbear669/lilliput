@@ -64,6 +64,8 @@
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
-    "@material-ui/core": "^3.9.3"
+    "@material-ui/core": "^3.9.3",
+    "mobx": "^5.9.4",
+    "mobx-react": "^5.4.3"
   }
 }
