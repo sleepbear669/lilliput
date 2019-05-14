@@ -24,6 +24,7 @@
   "homepage": "https://github.com/vikpe/react-webpack-typescript-starter",
   "scripts": {
     "build": "yarn run clean-dist && webpack -p --config=configs/webpack/prod.js",
+    "deploy": "npm run build && push-dir --dir=dist --branch=gh-pages --cleanup",
     "clean-dist": "rm -f -r -d dist",
     "lint": "tslint './src/**/*.ts*' --format stylish --force",
     "start": "yarn run start-dev",
@@ -45,6 +46,7 @@
     "css-loader": "^2.1.1",
     "express": "^4.16.4",
     "file-loader": "^3.0.1",
+    "gh-pages": "^2.0.1",
     "html-webpack-plugin": "^3.2.0",
     "image-webpack-loader": "^4.6.0",
     "jest": "^24.7.1",

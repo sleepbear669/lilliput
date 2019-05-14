@@ -1,11 +1,13 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import './App.scss';
 import {
-    AppBar, Tabs, Tab, Table, TableBody, TableCell, TableHead, TableRow, Paper, TextField, Input
+    AppBar, Tabs, Tab, Table, TableBody, TableCell, TableHead, TableRow, Paper, TextField, Input, Button
 } from '@material-ui/core';
 import {withStyles, Theme, WithStyles, createStyles, MuiThemeProvider, createMuiTheme} from '@material-ui/core/styles';
 import lightBlue from '@material-ui/core/colors/lightBlue';
 import Account, {AccountLog} from './../model/Account';
+import ShareValueStore from './../stores/ShareValueStore';
+
 import {observer} from 'mobx-react';
 
 const theme = createMuiTheme({
@@ -17,7 +19,7 @@ const theme = createMuiTheme({
             ...lightBlue,
             contrastText: '#ffffff',
         }
-    },
+    }
 });
 
 const styles = ({palette, spacing}: Theme) => createStyles({
@@ -31,6 +33,21 @@ const styles = ({palette, spacing}: Theme) => createStyles({
     },
     indicator: {
         backgroundColor: 'white'
+    },
+    revenueValueContainer: {
+        display: 'flex',
+        flexWrap: 'wrap'
+    },
+    revenueValueBox: {
+        width: 100,
+        textAlign: 'center',
+        padding: '10px 0',
+        margin: '10px auto',
+        fontSize: 20
+    },
+    contentsBox: {
+        padding: 10,
+        fontSize: 20
     }
 });
 
@@ -49,10 +66,14 @@ type State = {
     assets: Assets
 };
 
+const lineValue = [5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200];
+
+const shareValueStore = new ShareValueStore();
+
 @observer
 class App extends Component<Props, State> {
     state = {
-        mainTab: 'assets',
+        mainTab: 'share',
         assetsTab: 'private' as keyof Assets,
         assets: {
             private: new Account('private', 30),
@@ -106,40 +127,85 @@ class App extends Component<Props, State> {
                             <Tab label="주식" value={'share'}/>
                         </Tabs>
                     </AppBar>
-                    <Paper className={classes.tabContainer}>
+                    {
+                        mainTab === 'assets' &&
+                        <Paper className={classes.tabContainer}>
 
-                        <Tabs value={assetsTab}
-                              indicatorColor="primary"
-                              textColor="primary"
-                              onChange={this.handelTabChange('assetsTab')}
-                        >
-                            <Tab label="Private" value={'private'}/>
-                            <Tab label="First" value={'first'}/>
-                            <Tab label="Second" value={'second'}/>
-                        </Tabs>
-                        <TextField
-                            value={assets[assetsTab].seed}
-                            label="초기자본"
-                            margin="normal"
-                            variant="outlined"
-                            onChange={this.onChange(assets[assetsTab], 'seed')}
-                        />
-                        <Table className={classes.table}>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell align="left" padding="dense">수입</TableCell>
-                                    <TableCell align="left" padding="dense">지출</TableCell>
-                                    <TableCell align="left" padding="dense">잔액</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {
-                                    assets[assetsTab].accountLogs
-                                        .map(this.renderLogRow)
+                            <Tabs value={assetsTab}
+                                  indicatorColor="primary"
+                                  textColor="primary"
+                                  onChange={this.handelTabChange('assetsTab')}
+                            >
+                                <Tab label="Private" value={'private'}/>
+                                <Tab label="First" value={'first'}/>
+                                <Tab label="Second" value={'second'}/>
+                            </Tabs>
+                            <TextField
+                                value={assets[assetsTab].seed}
+                                label="초기자본"
+                                margin="normal"
+                                variant="outlined"
+                                onChange={this.onChange(assets[assetsTab], 'seed')}
+                            />
+                            <Table className={classes.table}>
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell align="left" padding="dense">수입</TableCell>
+                                        <TableCell align="left" padding="dense">지출</TableCell>
+                                        <TableCell align="left" padding="dense">잔액</TableCell>
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {
+                                        assets[assetsTab].accountLogs
+                                            .map(this.renderLogRow)
+                                    }
+                                </TableBody>
+                            </Table>
+                        </Paper>
+                    }
+                    {
+                        mainTab === 'share' &&
+                        <Paper className={classes.tabContainer}>
+                            <div className={classes.contentsBox}>
+                                Result :
+                                {shareValueStore.shareValues
+                                    .reduce((a, b) => a + b.value, 0)
                                 }
-                            </TableBody>
-                        </Table>
-                    </Paper>
+                            </div>
+                            <div className={classes.revenueValueContainer}>
+                                {
+                                    lineValue.map(v => {
+                                        return <Button key={v}
+                                                       variant="contained"
+                                                       color="primary"
+                                                       onClick={() => shareValueStore.addShareValue(v)}
+                                                       className={classes.revenueValueBox}>+ {v}</Button>;
+                                    })
+                                }
+                            </div>
+                            <div className={classes.contentsBox}>
+                                Calc :
+                                {
+                                    shareValueStore.shareValues
+                                        .map((shaverValue, i) => {
+                                            return <Fragment key={shaverValue.id}>
+                                                {
+                                                    i !== 0 &&
+                                                    <span>+</span>
+                                                }
+                                                <Button
+                                                    onClick={() => shareValueStore.removeShareValue(shaverValue)}
+                                                >
+                                                    {shaverValue.value}
+                                                </Button>
+                                            </Fragment>;
+                                        })
+                                }
+                            </div>
+                        </Paper>
+                    }
+
                 </div>
             </MuiThemeProvider>
 
