@@ -41,7 +41,6 @@ const styles = ({palette, spacing}: Theme) => createStyles({
     revenueValueBox: {
         width: 100,
         textAlign: 'center',
-        padding: '10px 0',
         margin: '10px auto',
         fontSize: 20
     },
@@ -67,7 +66,7 @@ type State = {
 };
 
 const lineValue = [5, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200];
-
+const sharePercentage = [10, 20, 30, 40, 50, 60, 70, 80, 90];
 const shareValueStore = new ShareValueStore();
 
 @observer
@@ -114,9 +113,15 @@ class App extends Component<Props, State> {
         };
     };
 
+    calcSharePrice = (total: number, percentage: number) => {
+        return Math.floor(total * percentage / 100);
+    };
+
     render() {
         const {mainTab, assetsTab, assets} = this.state;
         const {classes} = this.props;
+        const result = shareValueStore.shareValues
+            .reduce((a, b) => a + b.value, 0);
         return (
             <MuiThemeProvider theme={theme}>
                 <div className={classes.app}>
@@ -169,8 +174,19 @@ class App extends Component<Props, State> {
                         <Paper className={classes.tabContainer}>
                             <div className={classes.contentsBox}>
                                 Result :
-                                {shareValueStore.shareValues
-                                    .reduce((a, b) => a + b.value, 0)
+                                {
+                                    result
+                                }
+                            </div>
+                            <div className={classes.revenueValueContainer}>
+                                {
+                                    sharePercentage.map(s => {
+                                        return <div key={s}
+                                                    className={classes.revenueValueBox}
+                                        >
+                                            <span>{s}% : {this.calcSharePrice(result, s)}</span>
+                                        </div>;
+                                    })
                                 }
                             </div>
                             <div className={classes.revenueValueContainer}>
