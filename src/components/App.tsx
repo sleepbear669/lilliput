@@ -73,7 +73,7 @@ const shareValueStore = new ShareValueStore();
 @observer
 class App extends Component<Props, State> {
     state = {
-        mainTab: 'share',
+        mainTab: 'assets',
         assetsTab: 'private' as keyof Assets,
         assets: {
             private: new Account('private', 30),
